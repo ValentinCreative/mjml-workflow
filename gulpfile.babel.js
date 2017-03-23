@@ -12,6 +12,12 @@ import sequence from 'gulp-sequence'
 import inlineCss from 'gulp-inline-css'
 import mjmlDictionnary from './mjml-dictionnary'
 import replace from 'gulp-replace'
+import imagemin from 'gulp-imagemin'
+import imageminGuetzli from 'imagemin-guetzli'
+import svg2png from 'gulp-svg2png'
+import svgmin from 'gulp-svgmin'
+import svgScaler from 'svg-scaler'
+import addSvgSize from './addSvgSize'
 
 const browserSync = require('browser-sync').create()
 const project     = path.join(`${__dirname}/`)
@@ -26,14 +32,19 @@ const paths = {
         root        : `${project}src/`,
         emails      : `${project}src/emails/`,
         partials    : `${project}src/partials/`,
+        images      : `${project}src/images/`,
         stylesheets : `${project}src/css/`,
         css         : `${project}src/css/*.css`,
+        png         : `${project}src/images/**/*.png`,
+        jpg         : `${project}src/images/**/*.jpg`,
+        svg         : `${project}src/images/**/*.svg`,
         mjml        : `${project}src/emails/**/*.mjml`,
         all         : `${project}src/**/*.{hbs,mjml,css}`,
     },
     dist : {
-        root : `${project}dist/`,
-        all  : `${project}dist/**/*.html`,
+        root   : `${project}dist/`,
+        images : `${project}dist/images/`,
+        all    : `${project}dist/**/*.html`,
     },
 }
 
@@ -91,6 +102,26 @@ gulp.task('inline-css', () => {
         .pipe(inlineCss(options.inlineCss))
         .pipe(replace('style>', 'mj-style>'))
         .pipe(gulp.dest(paths.tmp.root))
+})
+
+gulp.task('png', () => {
+    return gulp.src(paths.src.png)
+        .pipe(imagemin([imagemin.optipng()]))
+        .pipe(gulp.dest(paths.dist.images))
+})
+
+gulp.task('jpg', () => {
+    return gulp.src(paths.src.jpg)
+        .pipe(imagemin([imageminGuetzli()]))
+        .pipe(gulp.dest(paths.dist.images))
+})
+
+gulp.task('svg', () => {
+    return gulp.src(paths.src.svg)
+        .pipe(addSvgSize())
+        .pipe(svg2png())
+        .pipe(imagemin([imagemin.optipng()]))
+        .pipe(gulp.dest(paths.dist.images))
 })
 
 gulp.task('sequence', callback => {

@@ -27,12 +27,19 @@
     "gulp": "^3.9.1",
     "gulp-compile-handlebars": "^0.6.1",
     "gulp-group-css-media-queries": "^1.2.0",
+    "gulp-imagemin": "^3.1.1",
     "gulp-inline-css": "daylon/gulp-inline-css",
     "gulp-mjml": "^2.0.0",
     "gulp-postcss": "^6.4.0",
     "gulp-replace": "^0.5.4",
     "gulp-sequence": "^0.4.6",
     "gulp-smoosher": "^0.0.9",
-    "postcss-csso": "^2.0.0"
+    "gulp-svg2png": "^2.0.2",
+    "gulp-svgmin": "^1.2.3",
+    "gulp-util": "^3.0.8",
+    "imagemin-guetzli": "^0.1.5",
+    "postcss-csso": "^2.0.0",
+    "svg-scaler": "^0.1.5",
+    "through2": "^2.0.3"
   }
 }
