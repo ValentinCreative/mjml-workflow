@@ -1,0 +1,16 @@
+<mjml>
+    <mj-head>
+        <!-- smoosh -->
+        <link rel="stylesheet" type="text/css" href="/style.css">
+        <!-- endsmoosh -->
+    </mj-head>
+    <mj-body>
+        <mj-container>
+            <mj-section class="hello">
+                <mj-column>
+                    {{> header}}
+                </mj-column>
+            </mj-section>
+        </mj-container>
+    </mj-body>
+</mjml>
