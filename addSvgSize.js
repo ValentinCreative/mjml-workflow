@@ -1,9 +1,9 @@
 import through from 'through2'
 
 function addWidthHeight(svg) {
-    const findViewBox = /viewBox="\d+ \d+ \d+ \d+"/g
+    const findViewBox = /viewBox="(\d+\.?\d ?){4}"/g
     const viewBox     = svg.match(findViewBox)[0]
-    const findOffset  = /\d+ \d+ \d+ \d+/g
+    const findOffset  = /(\d+\.?\d ?){4}/g
     const offset      = viewBox.match(findOffset)[0].split(' ')
     const width       = offset[2]
     const height      = offset[3]
