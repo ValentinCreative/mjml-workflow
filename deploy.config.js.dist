@@ -1,0 +1,6 @@
+module.exports =  {
+    hostname    : 'hostname',
+    username    : 'username',
+    destination : '/path/to/images/folder/',
+    imagesPath  : 'http://emails.domain.net/images/',
+}

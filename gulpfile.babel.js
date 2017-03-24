@@ -9,6 +9,7 @@ import mjmlEngine from 'mjml'
 import postcss from 'gulp-postcss'
 import smoosher from 'gulp-smoosher'
 import sequence from 'gulp-sequence'
+import rsync from 'gulp-rsync'
 import newer from 'gulp-newer'
 import clean from 'gulp-clean'
 import inlineCss from 'gulp-inline-css'
@@ -20,6 +21,7 @@ import svg2png from 'gulp-svg2png'
 import svgmin from 'gulp-svgmin'
 import svgScaler from 'svg-scaler'
 import addSvgSize from './addSvgSize'
+import deployConfig from './deploy.config'
 
 const browserSync = require('browser-sync').create()
 const project     = path.join(`${__dirname}/`)
@@ -56,6 +58,7 @@ const paths = {
         root   : `${project}dist/`,
         images : {
             root : `${project}dist/images/`,
+            all  : `${project}dist/images/**/*`,
         },
         html   : `${project}dist/**/*.html`,
     },
@@ -85,7 +88,7 @@ const options = {
 }
 
 const data = {
-
+    imagesPath : deployConfig.imagesPath,
 }
 
 const postcssPlugins = [
@@ -151,18 +154,29 @@ gulp.task('clean', () => {
         .pipe(clean())
 })
 
+gulp.task('deploy-images', () => {
+    gulp.src(paths.dist.images.all)
+        .pipe(rsync({
+            ...deployConfig,
+            root        : paths.dist.images.root,
+            archive     : true,
+            silent      : false,
+            compress    : true,
+        }))
+})
+
 gulp.task('sequence', callback => {
     sequence('assemble', 'css', 'inline-css', 'mjml')(callback)
 })
 
 gulp.task('default', callback => {
-    sequence('clean', 'sequence', 'images')(callback)
+    sequence('clean', 'sequence', 'images', 'deploy-images')(callback)
 })
 
 gulp.task('watch', () => {
     gulp.watch(paths.src.emails.mjml, ['sequence'])
     gulp.watch(paths.src.images.all, ['images'])
     gulp.watch(paths.dist.html).on('change', browserSync.reload)
-    browserSync.init(options.browserSync);
+    browserSync.init(options.browserSync)
 })
 

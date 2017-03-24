@@ -37,4 +37,6 @@ jspm_packages
 
 dist
 
+deploy.config.js
+
 tmp
