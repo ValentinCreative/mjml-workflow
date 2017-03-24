@@ -9,6 +9,7 @@ import mjmlEngine from 'mjml'
 import postcss from 'gulp-postcss'
 import smoosher from 'gulp-smoosher'
 import sequence from 'gulp-sequence'
+import clean from 'gulp-clean'
 import inlineCss from 'gulp-inline-css'
 import mjmlDictionnary from './mjml-dictionnary'
 import replace from 'gulp-replace'
@@ -26,32 +27,43 @@ const ignore      = path.join(`!${project}`)
 const paths = {
     tmp : {
         root : `${project}tmp/`,
+        all  : `${project}tmp/**/*`,
         mjml : `${project}tmp/**/*.mjml`,
     },
     src : {
         root        : `${project}src/`,
-        emails      : `${project}src/emails/`,
-        partials    : `${project}src/partials/`,
-        images      : `${project}src/images/`,
-        stylesheets : `${project}src/css/`,
-        css         : `${project}src/css/*.css`,
-        png         : `${project}src/images/**/*.png`,
-        jpg         : `${project}src/images/**/*.jpg`,
-        svg         : `${project}src/images/**/*.svg`,
-        mjml        : `${project}src/emails/**/*.mjml`,
-        all         : `${project}src/**/*.{hbs,mjml,css}`,
+        emails      : {
+            root : `${project}src/emails/`,
+            mjml : `${project}src/emails/**/*.mjml`,
+        },
+        partials    : {
+            root : `${project}src/partials/`,
+        },
+        stylesheets : {
+            root : `${project}src/css/`,
+            css : `${project}src/css/*.css`,
+        },
+        images      : {
+            root : `${project}src/images/`,
+            all  : `${project}src/images/**/*`,
+            png  : `${project}src/images/**/*.png`,
+            jpg  : `${project}src/images/**/*.jpg`,
+            svg  : `${project}src/images/**/*.svg`,
+        },
     },
     dist : {
         root   : `${project}dist/`,
-        images : `${project}dist/images/`,
-        all    : `${project}dist/**/*.html`,
+        images : {
+            root : `${project}dist/images/`,
+        },
+        html   : `${project}dist/**/*.html`,
     },
 }
 
 const options = {
 
     handlebars : {
-        batch : [paths.src.partials],
+        batch : [paths.src.partials.root],
     },
 
     autoprefixer : {
@@ -65,6 +77,10 @@ const options = {
         removeStyleTags      : true,
         applyAttributesTo    : mjmlDictionnary,
     },
+
+    browserSync : {
+        'server': paths.dist.root,
+    },
 }
 
 const data = {
@@ -77,9 +93,9 @@ const postcssPlugins = [
 ]
 
 gulp.task('assemble', () => {
-    return gulp.src(paths.src.mjml)
+    return gulp.src(paths.src.emails.mjml)
         .pipe(handlebars(data, options.handlebars))
-        .pipe(gulp.dest(paths.tmp))
+        .pipe(gulp.dest(paths.tmp.root))
 })
 
 gulp.task('mjml', () => {
@@ -90,7 +106,7 @@ gulp.task('mjml', () => {
 })
 
 gulp.task('css', () => {
-    return gulp.src(paths.src.css)
+    return gulp.src(paths.src.stylesheets.css)
         .pipe(postcss(postcssPlugins))
         .pipe(groupMediaQueries())
         .pipe(gulp.dest(paths.tmp.root))
@@ -105,36 +121,44 @@ gulp.task('inline-css', () => {
 })
 
 gulp.task('png', () => {
-    return gulp.src(paths.src.png)
+    return gulp.src(paths.src.images.png)
         .pipe(imagemin([imagemin.optipng()]))
-        .pipe(gulp.dest(paths.dist.images))
+        .pipe(gulp.dest(paths.dist.images.root))
 })
 
 gulp.task('jpg', () => {
-    return gulp.src(paths.src.jpg)
+    return gulp.src(paths.src.images.jpg)
         .pipe(imagemin([imageminGuetzli()]))
-        .pipe(gulp.dest(paths.dist.images))
+        .pipe(gulp.dest(paths.dist.images.root))
 })
 
 gulp.task('svg', () => {
-    return gulp.src(paths.src.svg)
+    return gulp.src(paths.src.images.svg)
         .pipe(addSvgSize())
         .pipe(svg2png())
         .pipe(imagemin([imagemin.optipng()]))
-        .pipe(gulp.dest(paths.dist.images))
+        .pipe(gulp.dest(paths.dist.images.root))
+})
+
+gulp.task('images', ['png', 'jpg', 'svg'])
+
+gulp.task('clean', () => {
+    return gulp.src([paths.tmp.all, paths.dist.html], {read : false})
+        .pipe(clean())
 })
 
 gulp.task('sequence', callback => {
     sequence('assemble', 'css', 'inline-css', 'mjml')(callback)
 })
 
-gulp.task('default', ['sequence'])
+gulp.task('default', callback => {
+    sequence('clean', 'sequence', 'images')(callback)
+})
 
 gulp.task('watch', () => {
-    gulp.watch(paths.src.all, ['sequence'])
-    gulp.watch(paths.dist.all).on('change', browserSync.reload)
-    browserSync.init({
-        'server': paths.dist.root,
-    });
+    gulp.watch(paths.src.emails.mjml, ['sequence'])
+    gulp.watch(paths.src.images.all, ['images'])
+    gulp.watch(paths.dist.html).on('change', browserSync.reload)
+    browserSync.init(options.browserSync);
 })
 
