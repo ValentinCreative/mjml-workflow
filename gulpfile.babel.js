@@ -165,6 +165,11 @@ gulp.task('clean', () => {
         .pipe(clean())
 })
 
+gulp.task('clean-images', () => {
+    return gulp.src(paths.dist.images.all, {read : false})
+        .pipe(clean())
+})
+
 gulp.task('deploy-images', () => {
     gulp.src(paths.dist.images.all)
         .pipe(rsync(options.rsync))
