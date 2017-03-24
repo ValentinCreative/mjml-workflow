@@ -9,6 +9,7 @@ import mjmlEngine from 'mjml'
 import postcss from 'gulp-postcss'
 import smoosher from 'gulp-smoosher'
 import sequence from 'gulp-sequence'
+import newer from 'gulp-newer'
 import clean from 'gulp-clean'
 import inlineCss from 'gulp-inline-css'
 import mjmlDictionnary from './mjml-dictionnary'
@@ -122,18 +123,21 @@ gulp.task('inline-css', () => {
 
 gulp.task('png', () => {
     return gulp.src(paths.src.images.png)
+        .pipe(newer(paths.dist.images.root))
         .pipe(imagemin([imagemin.optipng()]))
         .pipe(gulp.dest(paths.dist.images.root))
 })
 
 gulp.task('jpg', () => {
     return gulp.src(paths.src.images.jpg)
+        .pipe(newer(paths.dist.images.root))
         .pipe(imagemin([imageminGuetzli()]))
         .pipe(gulp.dest(paths.dist.images.root))
 })
 
 gulp.task('svg', () => {
     return gulp.src(paths.src.images.svg)
+        .pipe(newer(paths.dist.images.root))
         .pipe(addSvgSize())
         .pipe(svg2png())
         .pipe(imagemin([imagemin.optipng()]))

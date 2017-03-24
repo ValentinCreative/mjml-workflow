@@ -31,6 +31,7 @@
     "gulp-imagemin": "^3.1.1",
     "gulp-inline-css": "daylon/gulp-inline-css",
     "gulp-mjml": "^2.0.0",
+    "gulp-newer": "^1.3.0",
     "gulp-postcss": "^6.4.0",
     "gulp-replace": "^0.5.4",
     "gulp-sequence": "^0.4.6",
