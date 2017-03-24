@@ -22,6 +22,7 @@ import svgmin from 'gulp-svgmin'
 import svgScaler from 'svg-scaler'
 import addSvgSize from './addSvgSize'
 import deployConfig from './deploy.config'
+import cssNesting from 'postcss-nested'
 
 const browserSync = require('browser-sync').create()
 const project     = path.join(`${__dirname}/`)
@@ -41,6 +42,7 @@ const paths = {
         },
         partials    : {
             root : `${project}src/partials/`,
+            hbs  : `${project}src/partials/**/*.hbs`,
         },
         stylesheets : {
             root : `${project}src/css/`,
@@ -103,6 +105,7 @@ const data = {
 }
 
 const postcssPlugins = [
+    cssNesting,
     autoprefixer(options.autoprefixer),
     csso,
 ]
@@ -184,7 +187,11 @@ gulp.task('default', callback => {
 })
 
 gulp.task('watch', () => {
-    gulp.watch(paths.src.emails.mjml, ['sequence'])
+    gulp.watch([
+        paths.src.emails.mjml,
+        paths.src.stylesheets.css,
+        paths.src.partials.hbs
+    ], ['sequence'])
     gulp.watch(paths.src.images.all, ['images'])
     gulp.watch(paths.dist.html).on('change', browserSync.reload)
     browserSync.init(options.browserSync)
