@@ -83,8 +83,19 @@ const options = {
     },
 
     browserSync : {
-        'server': paths.dist.root,
+        server : {
+            baseDir   : paths.dist.root,
+            directory : true,
+        },
     },
+
+    rsync : {
+        ...deployConfig,
+        root        : paths.dist.images.root,
+        archive     : true,
+        silent      : false,
+        compress    : true,
+    }
 }
 
 const data = {
@@ -156,13 +167,7 @@ gulp.task('clean', () => {
 
 gulp.task('deploy-images', () => {
     gulp.src(paths.dist.images.all)
-        .pipe(rsync({
-            ...deployConfig,
-            root        : paths.dist.images.root,
-            archive     : true,
-            silent      : false,
-            compress    : true,
-        }))
+        .pipe(rsync(options.rsync))
 })
 
 gulp.task('sequence', callback => {
