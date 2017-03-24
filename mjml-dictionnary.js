@@ -24,7 +24,7 @@ module.exports =  {
         'strokecolor',
         'arcsize',
     ],
-    'mj-body, mj-container, mj-section, mj-column, mj-button' : [
+    'mj-body, mj-container, mj-section, mj-column, mj-button, mj-wrapper' : [
         'background-color'
     ],
     'mj-container' : [
