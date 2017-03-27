@@ -1,6 +1,5 @@
 import gulp from 'gulp'
 import path from 'path'
-import autoprefixer from 'autoprefixer'
 import csso from 'postcss-csso'
 import groupMediaQueries from 'gulp-group-css-media-queries'
 import handlebars from 'gulp-compile-handlebars'
@@ -23,6 +22,7 @@ import svgScaler from 'svg-scaler'
 import addSvgSize from './addSvgSize'
 import deployConfig from './deploy.config'
 import cssNesting from 'postcss-nested'
+import cssNext from 'postcss-cssnext'
 
 const browserSync = require('browser-sync').create()
 const project     = path.join(`${__dirname}/`)
@@ -72,9 +72,8 @@ const options = {
         batch : [paths.src.partials.root],
     },
 
-    autoprefixer : {
+    cssNext : {
         browsers : ['last 3 versions'],
-        cascade  : false,
     },
 
     inlineCss : {
@@ -85,6 +84,7 @@ const options = {
     },
 
     browserSync : {
+        open   : false,
         server : {
             baseDir   : paths.dist.root,
             directory : true,
@@ -106,7 +106,7 @@ const data = {
 
 const postcssPlugins = [
     cssNesting,
-    autoprefixer(options.autoprefixer),
+    cssNext(options.cssNext),
     csso,
 ]
 

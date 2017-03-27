@@ -9,7 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "autoprefixer": "^6.7.7",
     "babel": "^6.23.0",
     "babel-core": "^6.24.0",
     "babel-eslint": "^7.2.0",
@@ -41,6 +40,7 @@
     "gulp-svgmin": "^1.2.3",
     "gulp-util": "^3.0.8",
     "imagemin-guetzli": "^0.1.5",
+    "postcss-cssnext": "^2.10.0",
     "postcss-csso": "^2.0.0",
     "postcss-nested": "^1.0.0",
     "svg-scaler": "^0.1.5",
